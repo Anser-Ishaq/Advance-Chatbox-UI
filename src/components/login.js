@@ -1,15 +1,105 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Alert, Modal, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { auth, signInWithEmailAndPassword, } from '../../firebase';
 
 
-export default function Login({navigation}) {
+
+
+
+
+export default function Login({ navigation }) {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
+
+    const [emailerror, setemailerror] = useState('');
+    const [passerror, setpasserror] = useState('');
+
+
+    const login = async (email, password) => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+            return userCredential;
+        } catch (error) {
+            console.log(error.message);
+            setModalTitle('Error');
+            setModalMessage('Invalid Email or Password');
+            setModalVisible(true);
+        }
+        return null;
+    }
+
+
+
+    const handleLogin = async () => {
+        // if (validateForm()) {
+        console.log('Email:', email);
+        console.log('Password:', password);
+
+        try {
+            const userCredential = await login(email, password);
+            if (userCredential != null) {
+                navigation.navigate('Home');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+    };
+    const closeModal = () => {
+        setModalVisible(false);
+    };
+    const validateFields = () => {
+        let isValid = true;
+
+        if (!email) {
+            setemailerror('Fill this field');
+            isValid = false;
+        } else if (!email.includes('@gmail.com')) {
+            setemailerror('Email should contain "@gmail.com"');
+            isValid = false;
+        }
+
+        if (!password) {
+            setpasserror('Fill this field');
+            isValid = false;
+        } else if (password.length < 6) {
+            setpasserror('Password must be at least 6 characters');
+        }
+
+
+        return isValid;
+    };
+    const handleInputChange = (setter, errorSetter, value) => {
+        setter(value);
+        if (errorSetter) {
+            errorSetter('');
+        }
+    };
+
+    const handleForgetPass = () => {
+        navigation.navigate('Forgetpass')
+    };
+    const handleSubmit = () => {
+        if (validateFields()) {
+            console.log('Form submitted:', { email, password });
+            handleLogin();
+        }
+    };
+
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity style={{position:'absolute', left:20, top:60,}}
-            onPress={()=>navigation.navigate('Onboard')}>
-            <AntDesign name="arrowleft" size={24} color="black" />
+            <TouchableOpacity style={{ position: 'absolute', left: 20, top: 60, }}
+                onPress={() => navigation.navigate('Onboard')}>
+                <AntDesign name="arrowleft" size={24} color="black" />
             </TouchableOpacity>
             <View style={styles.headcontainer}>
                 <View style={styles.logincontainer}>
@@ -59,29 +149,51 @@ export default function Login({navigation}) {
 
             </View>
             <View style={styles.content}>
-                <Text style={styles.Email}>Your email </Text>
+                <Text style={[styles.Email, emailerror && styles.labelError,]}>Your email </Text>
                 <TextInput
-                 style={styles.input}
-                 placeholder='abc@gmail.com'
-                 placeholderTextColor={'#000E08'}
+                    style={[styles.input, emailerror && styles.inputError]}
+                    onChangeText={(value) => handleInputChange(setEmail, setemailerror, value)}
+                    value={email}
+                    placeholder='abc@gmail.com'
+                    placeholderTextColor={'#000E08'}
                 />
-                <Text style={styles.Email}>
+                {emailerror && <Text style={styles.errorText}>{emailerror}</Text>}
+                <Text style={[styles.Email, passerror && styles.labelError, { marginTop: emailerror ? 0 : 20 }]}>
                     Password
                 </Text>
                 <TextInput
-                style={styles.input}
-                placeholder='* * * * * * * * *'
-                placeholderTextColor={'#000E08'}
-                secureTextEntry={true}
+                    style={[styles.input, passerror && styles.inputError]}
+                    placeholder='* * * * * * * * *'
+                    placeholderTextColor={'#000E08'}
+                    value={password}
+                    onChangeText={(value) => handleInputChange(setPassword, setpasserror, value)}
+                    secureTextEntry={true}
                 />
-
-                <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Home')}>
+                {passerror && <Text style={styles.errorText}>{passerror}</Text>}
+                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                     <Text style={styles.buttontext}>Log in</Text>
                 </TouchableOpacity>
-                <TouchableOpacity >
-                    <Text style={styles.forgot}>Forgot Password?</Text>
+                <TouchableOpacity style={styles.forgot} onPress={handleForgetPass}>
+                    <Text >Forgot Password?</Text>
                 </TouchableOpacity>
+
             </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={closeModal}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>{modalTitle}</Text>
+                        <Text style={styles.modalMessage}>{modalMessage}</Text>
+                        <Pressable style={styles.modalButton} onPress={closeModal}>
+                            <Text style={styles.modalButtonText}>OK</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 }
@@ -165,40 +277,83 @@ const styles = StyleSheet.create({
         color: '#24786D',
         // left: 0,
     },
-    content:{
-        position:'absolute',
+    content: {
+        position: 'absolute',
         top: 380,
         // borderWidth:1,
         // borderColor:'black',
-        height:450,
-        width:340
+        height: 450,
+        width: 340
     },
-    input:{
-        borderBottomWidth:1,
-        borderBottomColor:'#CDD1D0',
-        height:40,
-        marginBottom:20,
+    input: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#CDD1D0',
+        height: 40,
+        // marginBottom: 20,
     },
-    button:{
-        backgroundColor:'#24786D',
-        width:327,
-        height:48,
-        top:170,
-        borderRadius:15,
-        justifyContent:'center',
-        alignItems:'center',
+    button: {
+        backgroundColor: '#24786D',
+        width: 327,
+        height: 48,
+        top: 170,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    buttontext:{
-        fontSize:16,
-        fontWeight:'600',
-        color:'white',
+    buttontext: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: 'white',
 
     },
-    forgot:{
-        fontSize:14,
-        fontWeight:'500',
-        color:'#24786D',
-        alignSelf:'center',
-        top:185,
+    forgot: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#24786D',
+        alignSelf: 'center',
+        top: 185,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    modalMessage: {
+        fontSize: 16,
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    modalButton: {
+        backgroundColor: '#24786D',
+        padding: 10,
+        borderRadius: 5,
+        width: 60,
+    },
+    modalButtonText: {
+        color: 'white',
+        fontSize: 16,
+        alignSelf: 'center',
+    },
+    labelError: {
+        color: 'red',
+    },
+    inputError: {
+        borderColor: 'red',
+    },
+    errorText: {
+        color: 'red',
+        alignSelf: 'flex-end',
     },
 });

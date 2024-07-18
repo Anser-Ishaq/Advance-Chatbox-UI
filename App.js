@@ -13,6 +13,10 @@ import Calls from './src/components/calls';
 import Contacts from './src/components/contacts';
 import Test from './src/components/test';
 import Settings from './src/components/settings';
+import Update from './src/components/update';
+import Forgetpass from './src/components/forgetpass';
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -25,17 +29,19 @@ export default function App() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Forgetpass" component={Forgetpass} />
       <Stack.Screen name="Johnchat" component={Johnchat} />
       <Stack.Screen name="Contacts" component={Contacts} />
-     <Stack.Screen name="Calls" component={Calls} />
-     <Stack.Screen name="Settings" component={Settings} />
-
-
+      <Stack.Screen name="Calls" component={Calls} />
+      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Update" component={Update} />
 
     </Stack.Navigator>
   </NavigationContainer>
   // <Signup/>
+  // <Forgetpass/>
   // <SignupPage/>
+  // <Update/>
   // <Test/>
     // <Home/>
     // <Settings/>

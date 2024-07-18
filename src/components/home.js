@@ -1,5 +1,5 @@
-// Home.js
-import React from 'react';
+
+import React,{useState,useMemo,useEffect} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
@@ -7,6 +7,8 @@ import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
+import { auth, database } from '../../firebase';
+import { collection, doc, getDoc } from '@firebase/firestore';
 
 const images = [
     { id: '2', url: require('../../assets/1.png'), name: 'Adil' },
@@ -41,7 +43,44 @@ const rightSwipe = () => {
     )
 };
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation,route }) => {
+    const [name, setName] = useState('');
+    const [imageUri, setImageUri] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const user = auth.currentUser;
+                if (user) {
+                    const userCollection = collection(database, 'users');
+                    const userDoc = doc(userCollection, user.uid);
+                    const userData = await getDoc(userDoc);
+
+                    if (userData.exists()) {
+                        setName(userData.data().name);
+                        setImageUri(userData.data().photoURL);
+                    } else {
+                        console.log('No such document!');
+                    }
+                } else {
+                    console.log('No user found.');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    const profilePicture = useMemo(() => (
+        <Image source={imageUri ? { uri: imageUri } : require('../../assets/bluepic.png')} style={styles.image}/>
+    ), [imageUri]);
+
+    const profilePicture1 = useMemo(() => (
+        <Image source={imageUri ? { uri: imageUri } : require('../../assets/bluepic.png')} style={styles.bluepic}/>
+    ), [imageUri]);
+
     const handlePress = (item) => {
         navigation.navigate('Johnchat', { item });
     };
@@ -49,7 +88,7 @@ const Home = ({ navigation }) => {
     const renderItem = ({ item, index }) => (
         <GestureHandlerRootView key={index}>
             <Swipeable renderRightActions={rightSwipe}>
-                <Animatable.View animation="zoomIn"  style={styles.data}>
+                <Animatable.View animation="zoomIn" style={styles.data}>
                     <Image source={item.image}
                         style={{ height: 52, width: 52, }} />
                     <TouchableOpacity style={{ flexDirection: 'row', }} onPress={() => handlePress(item)}>
@@ -86,12 +125,12 @@ const Home = ({ navigation }) => {
                         <AntDesign name="search1" size={24} color="white" />
                     </TouchableOpacity>
                     <Text style={styles.head}>Home</Text>
-                    <Image source={require('../../assets/bluepic.png')} style={styles.image} />
+                    {profilePicture}
                 </View>
                 <View style={styles.listcontainer}>
                     <View style={{ flexDirection: 'column', }}>
                         <View>
-                            <Image source={require('../../assets/bluepic.png')} style={styles.bluepic} />
+                            {profilePicture1}
                             <TouchableOpacity style={{ top: 45, left: 45, height: 16, width: 16, position: 'absolute' }}>
                                 <Image source={require('../../assets/plus.png')}
                                 /></TouchableOpacity>
@@ -112,7 +151,7 @@ const Home = ({ navigation }) => {
                         showsHorizontalScrollIndicator={false}
                     />
                 </View>
-                <View  style={styles.scrollcontainer} contentContainerStyle={styles.scrollContent} >
+                <View style={styles.scrollcontainer} contentContainerStyle={styles.scrollContent} >
                     <FlatList
                         data={data}
                         renderItem={renderItem}
@@ -122,49 +161,49 @@ const Home = ({ navigation }) => {
                 <View style={styles.bottomcontainer}>
                     <View style={{ flexDirection: 'row', }}>
                         <TouchableOpacity style={styles.bottombutton}>
-                            <AntDesign name="message1" size={24} color="#24786D" />
+                            <AntDesign name="message1" size={24} color="#24786D" onPress={() => navigation.navigate('Home')}/>
                         </TouchableOpacity >
-                        <TouchableOpacity style={styles.bottombutton} onPress={()=>navigation.navigate('Calls')}>
+                        <TouchableOpacity style={styles.bottombutton} onPress={() => navigation.navigate('Calls')}>
                             <Feather name="phone-call" size={24} color="#797C7B" />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.bottombutton} onPress={()=>navigation.navigate('Contacts')}>
+                        <TouchableOpacity style={styles.bottombutton} onPress={() => navigation.navigate('Contacts')}>
                             <MaterialIcons name="contacts" size={24} color="#797C7B" />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.bottombutton}  onPress={()=>navigation.navigate('Settings')}>
+                        <TouchableOpacity style={styles.bottombutton} onPress={() => navigation.navigate('Settings')}>
                             <AntDesign name="setting" size={24} color="#797C7B" />
                         </TouchableOpacity>
                     </View>
 
                     <View style={{ flexDirection: 'row', zIndex: 10, }}>
-                        <TouchableOpacity onPress={()=>navigation.navigate('Home')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
                             <Text style={{
-                            color: '#24786D',
-                            fontSize: 16,
-                            fontWeight: '500',
-                            marginLeft: 10,
-                        }}>Messages</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('Calls')}>
-                        <Text style={{
-                            color: '#797C7B',
-                            fontSize: 16,
-                            marginHorizontal: 42,
-                            fontWeight: '500',
-                        }}>Calls</Text>
+                                color: '#24786D',
+                                fontSize: 16,
+                                fontWeight: '500',
+                                marginLeft: 10,
+                            }}>Messages</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Calls')}>
+                            <Text style={{
+                                color: '#797C7B',
+                                fontSize: 16,
+                                marginHorizontal: 42,
+                                fontWeight: '500',
+                            }}>Calls</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('Contacts')}>
-                        <Text style={{
-                            color: '#797C7B',
-                            fontSize: 16,
-                            fontWeight: '500',
-                        }}>contacts</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Contacts')}>
+                            <Text style={{
+                                color: '#797C7B',
+                                fontSize: 16,
+                                fontWeight: '500',
+                            }}>contacts</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('Settings')}>
-                        <Text style={{
-                            color: '#797C7B',
-                            fontSize: 16,
-                            marginLeft: 35,
-                            fontWeight: '500',
-                        }}>Settings</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                            <Text style={{
+                                color: '#797C7B',
+                                fontSize: 16,
+                                marginLeft: 35,
+                                fontWeight: '500',
+                            }}>Settings</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -207,6 +246,7 @@ const styles = StyleSheet.create({
     image: {
         height: 44,
         width: 44,
+        borderRadius:22,
         alignSelf: 'flex-end',
     },
     listcontainer: {
