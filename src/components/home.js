@@ -12,22 +12,22 @@ import { collection, doc, getDoc } from '@firebase/firestore';
 
 const images = [
     { id: '2', url: require('../../assets/1.png'), name: 'Adil' },
-    { id: '3', url: require('../../assets/2.png'), name: 'Marina' },
-    { id: '4', url: require('../../assets/3.png'), name: 'Dean' },
-    { id: '5', url: require('../../assets/4.png'), name: 'Max' },
-    { id: '6', url: require('../../assets/5.png'), name: 'Kevin' }
+    { id: '3', url: require('../../assets/2.png'), name: 'Maria' },
+    { id: '4', url: require('../../assets/3.png'), name: 'Danial' },
+    { id: '5', url: require('../../assets/4.png'), name: 'Bilal' },
+    { id: '6', url: require('../../assets/5.png'), name: 'Omer' }
 ];
 
 const data = [
-    { id: '2', name: 'Alex Linderson', image: require('../../assets/bluepic.png'), sub: 'How are you today?', time: '2 min ago', msg: '3' },
-    { id: '3', name: 'Team Align', image: require('../../assets/3.png'), sub: 'How are you today?', time: '2 min ago', msg: '4' },
-    { id: '4', name: 'John Abraham', image: require('../../assets/1.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
-    { id: '5', name: 'Sabila Sayma', image: require('../../assets/2.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
-    { id: '6', name: 'John Borino', image: require('../../assets/4.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
+    { id: '2', name: 'Abeer Ali', image: require('../../assets/bluepic.png'), sub: 'How are you today?', time: '2 min ago', msg: '3' },
+    { id: '3', name: 'Anser Ishaq', image: require('../../assets/3.png'), sub: 'How are you today?', time: '2 min ago', msg: '4' },
+    { id: '4', name: 'Shahryar Tahir', image: require('../../assets/1.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
+    { id: '5', name: 'Saima Ashraf', image: require('../../assets/2.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
+    { id: '6', name: 'Abdullah Khan', image: require('../../assets/4.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
     { id: '7', name: 'Ali Haider', image: require('../../assets/5.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
-    { id: '8', name: 'Shehri', image: require('../../assets/1.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
-    { id: '9', name: 'Bilal', image: require('../../assets/3.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
-    { id: '10', name: 'Izn', image: require('../../assets/5.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
+    { id: '8', name: 'Omer Farooq', image: require('../../assets/1.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
+    { id: '9', name: 'Muhammad Bilal', image: require('../../assets/3.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
+    { id: '10', name: 'Izn Ur Rehman', image: require('../../assets/5.png'), sub: 'How are you today?', time: '2 min ago', msg: '' },
 ];
 
 const rightSwipe = () => {

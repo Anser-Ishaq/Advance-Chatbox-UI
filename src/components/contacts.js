@@ -9,15 +9,15 @@ import * as Animatable from 'react-native-animatable';
 
 
 const data = [
-    { id: '2', name: 'Alex Linderson', image: require('../../assets/bluepic.png'), sub: 'Life is beautiful 👌',},
+    { id: '2', name: 'Abbas Ali', image: require('../../assets/bluepic.png'), sub: 'Life is beautiful 👌',},
     { id: '3', name: 'Ali Haider', image: require('../../assets/3.png'), sub: 'Be your own hero 💪', },
-    { id: '4', name: 'Abraham ', image: require('../../assets/1.png'), sub: 'Keep working ✍', },
-    { id: '5', name: 'Bristy Hoque', image: require('../../assets/2.png'), sub: 'Flowers are beautiful 🌸',  },
-    { id: '6', name: 'Borino John', image: require('../../assets/4.png'), sub: 'Make yourself proud 😍',  },
+    { id: '4', name: 'Abrahim Khan ', image: require('../../assets/1.png'), sub: 'Keep working ✍', },
+    { id: '5', name: 'Bushra ', image: require('../../assets/2.png'), sub: 'Flowers are beautiful 🌸',  },
+    { id: '6', name: 'Burhan Ashraf', image: require('../../assets/4.png'), sub: 'Make yourself proud 😍',  },
     { id: '7', name: 'Sohail Ali', image: require('../../assets/5.png'), sub: 'Keep working ✍', },
-    { id: '8', name: 'Shehri', image: require('../../assets/1.png'), sub: 'Life is beautiful 👌',  },
-    { id: '9', name: 'Sammar', image: require('../../assets/3.png'), sub: 'Flowers are beautiful 🌸', },
-    { id: '10', name: 'Sabila Sayma', image: require('../../assets/2.png'), sub: 'Make yourself proud 😍',},
+    { id: '8', name: 'Subhan khan', image: require('../../assets/1.png'), sub: 'Life is beautiful 👌',  },
+    { id: '9', name: 'Sammar Raja', image: require('../../assets/3.png'), sub: 'Flowers are beautiful 🌸', },
+    { id: '10', name: 'Saima Ashraf', image: require('../../assets/2.png'), sub: 'Make yourself proud 😍',},
 ];
 const groupNamesByFirstLetter = (data) => {
     const groupedData = {};

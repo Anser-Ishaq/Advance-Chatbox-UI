@@ -34,5 +34,6 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-# ignore .env file
+# local env files
+.env*.local
 .env
